@@ -1,1 +1,28 @@
+backend:
+  # 使用 GitHub 作为 Git 后端
+  name: git-gateway
+  # 替换为您的分支名称，通常是 main 或 master
+  branch: main 
 
+# 认证配置：Decap CMS 需要一个身份验证服务。
+# Cloudflare Pages 默认不提供 Netlify Identity，您需要使用 GitHub OAuth。
+# 我们在步骤 4 中解决这个问题。
+publish_mode: editorial_workflow # 开启内容审核工作流（可选）
+
+# 媒体文件配置
+media_folder: "src/assets/uploads" # 媒体文件上传路径
+public_folder: "/src/assets/uploads" # 媒体文件公共访问路径
+
+# 内容集合 (Collections)
+collections:
+  - name: "blog" # 集合名称 (代码用)
+    label: "博客文章" # CMS 中显示的名称
+    folder: "src/content/blog" # 您的 Markdown/MDX 文件存放路径
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields: # 定义文章的 Frontmatter 字段
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "发布日期", name: "pubDate", widget: "datetime"}
+      - {label: "作者", name: "author", widget: "string"}
+      - {label: "标签", name: "tags", widget: "list", required: false}
+      - {label: "文章正文", name: "body", widget: "markdown"}
