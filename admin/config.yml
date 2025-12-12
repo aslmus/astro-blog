@@ -1,28 +1,40 @@
+# public/admin/config.yml
+
+# 核心配置：使用 test-repo 后端，禁用 Decap CMS 的 Git 认证和提交功能
 backend:
-  # 使用 GitHub 作为 Git 后端
-  name: git-gateway
-  # 替换为您的分支名称，通常是 main 或 master
+  name: test-repo
+  # 以下是内容存储的结构，虽然 test-repo 不实际提交，
+  # 但配置这些路径可以让 CMS 在界面上模拟文件路径，方便您手动复制。
   branch: main 
 
-# 认证配置：Decap CMS 需要一个身份验证服务。
-# Cloudflare Pages 默认不提供 Netlify Identity，您需要使用 GitHub OAuth。
-# 我们在步骤 4 中解决这个问题。
-publish_mode: editorial_workflow # 开启内容审核工作流（可选）
-
 # 媒体文件配置
-media_folder: "src/assets/uploads" # 媒体文件上传路径
-public_folder: "/src/assets/uploads" # 媒体文件公共访问路径
+media_folder: "src/assets/uploads" # 媒体文件上传的临时路径
+public_folder: "/src/assets/uploads" # 媒体文件在前端的公共路径
 
-# 内容集合 (Collections)
+# 开启内容审核工作流 (可选，但推荐。CMS 界面会更专业)
+publish_mode: editorial_workflow
+
+# 媒体库设置 (Decap CMS 可以在浏览器中处理图像，直到您手动保存)
+# 🚨 注意：test-repo 模式下，图片不会自动上传到 Git。
+# 您需要手动保存图片并将其放到 media_folder 指定的位置。
+media_library:
+  name: upload
+  config:
+    multiple: true
+
+# 内容集合 (Collections) - 保持与您 Astro 项目内容结构的路径一致
 collections:
-  - name: "blog" # 集合名称 (代码用)
-    label: "博客文章" # CMS 中显示的名称
-    folder: "src/content/blog" # 您的 Markdown/MDX 文件存放路径
+  - name: "blog" 
+    label: "博客文章" 
+    # 确保此路径与您 Astro 中读取文章的路径一致
+    folder: "src/content/blog" 
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields: # 定义文章的 Frontmatter 字段
       - {label: "标题", name: "title", widget: "string"}
       - {label: "发布日期", name: "pubDate", widget: "datetime"}
       - {label: "作者", name: "author", widget: "string"}
+      - {label: "描述", name: "description", widget: "text", required: false}
+      - {label: "封面图片", name: "image", widget: "image", required: false}
       - {label: "标签", name: "tags", widget: "list", required: false}
       - {label: "文章正文", name: "body", widget: "markdown"}
